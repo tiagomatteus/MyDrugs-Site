@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyDrugs - Loja Online</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    h1 {
+      font-size: 3rem;
+      color: #00ff00;
+      margin-top: 80px;
+    }
+    .sidebar {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .sidebar h2 {
+      color: #00ff00;
+      font-size: 1.5rem;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    .sidebar .favorites, .sidebar .cart {
+      display: none; /* Inicialmente oculto */
+      background-color: #1e1e1e;
+      padding: 10px;
+      border-radius: 8px;
+      width: 200px;
+    }
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      width: 80%;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .product {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      transition: transform 0.2s ease;
+      position: relative;
+    }
+    .product:hover {
+      transform: scale(1.05);
+    }
+    .product-name {
+      font-size: 1.5rem;
+      color: #00ff00;
+    }
+    .product-price {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #ff5722;
+    }
+    .buy-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00ff00;
+      color: #121212;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .buy-button:hover {
+      background-color: #76ff03;
+    }
+    .heart {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      color: #e0e0e0;
+      cursor: pointer;
+    }
+    .heart.liked {
+      color: #ff1744;
+    }
+    .cart {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      width: 80%;
+      display: none;
+    }
+    .cart h2 {
+      color: #00ff00;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    .remove-button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      background-color: #ff1744;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .remove-button:hover {
+      background-color: #ff616f;
+    }
+    .cart-total {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      text-align: right;
+      color: #ff5722;
+    }
+    .favorites-list {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      width: 80%;
+    }
+    .favorites-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    h1 {
+      font-size: 3rem;
+      color: #00ff00;
+      margin-top: 80px;
+    }
+    .header {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .header h2 {
+      color: #00ff00;
+      font-size: 1.5rem;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    .login-container, .register-container {
+      display: none; /* Inicialmente oculto */
+      margin: 5px 0;
+    }
+    /* Exibe os campos de login e registro ao passar o mouse */
+    .header h2:hover + .login-container, .header h2:hover + .register-container {
+      display: block; /* Torna visível ao passar o mouse */
+    }
+    .login-container input, .register-container input {
+      padding: 3px;
+      margin-right: 3px;
+      border: 1px solid #333;
+      border-radius: 5px;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      font-size: 0.67rem; /* 67% de redução */
+    }
+    .login-container button, .register-container button {
+      padding: 3px 10px;
+      background-color: #00ff00;
+      color: #121212;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.67rem; /* 67% de redução */
+    }
+    .login-container button:hover, .register-container button:hover {
+      background-color: #76ff03;
+    }
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      width: 80%;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .product {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+    .product:hover {
+      transform: scale(1.05);
+    }
+    .product-name {
+      font-size: 1.5rem;
+      color: #00ff00;
+    }
+    .product-price {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #ff5722;
+    }
+    .buy-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #00ff00;
+      color: #121212;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .buy-button:hover {
+      background-color: #76ff03;
+    }
+    .cart {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      width: 80%;
+      display: none;
+    }
+    .cart h2 {
+      color: #00ff00;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    .remove-button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      background-color: #ff1744;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .remove-button:hover {
+      background-color: #ff616f;
+    }
+    .cart-total {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      text-align: right;
+      color: #ff5722;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bem-vindo ao MyDrugs</h1>
+
+  <div class="header">
+    <div>
+      <h2>Login</h2>
+      <div class="login-container">
+        <input type="text" placeholder="Nome de usuário" id="login-username">
+        <input type="password" placeholder="Senha" id="login-password">
+        <button onclick="login()">Entrar</button>
+      </div>
+    </div>
+    <div>
+      <h2>Registrar</h2>
+      <div class="register-container">
+        <input type="text" placeholder="Nome de usuário" id="register-username">
+        <input type="email" placeholder="E-mail" id="register-email">
+        <input type="password" placeholder="Senha" id="register-password">
+        <button onclick="register()">Registrar</button>
+      </div>
+    </div>
+  </div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2 onclick="toggleFavorites()">Meus Favoritos</h2>
+    <div class="favorites">
+      <h2>Favoritos</h2>
+      <div class="favorites-list"></div>
+    </div>
+    <h2 onclick="toggleCart()">Ver Meu Carrinho</h2>
+    <div class="cart">
+      <h2>Carrinho de Compras</h2>
+      <div class="cart-list"></div>
+    </div>
+  </div>
+
+  <!-- Produtos -->
+  <div class="product-list">
+    <div class="product">
+      <div class="product-name">Dipirona</div>
+      <div class="product-price">R$15 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Dipirona', 15)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Dipirona', 15)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Paracetamol</div>
+      <div class="product-price">R$10 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Paracetamol', 10)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Paracetamol', 10)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Pílula do Dia Seguinte</div>
+      <div class="product-price">R$45 por unidade</div>
+      <button class="buy-button" onclick="addToCart('Pílula do Dia Seguinte', 45)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Pílula do Dia Seguinte', 45)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Ibuprofeno</div>
+      <div class="product-price">R$20 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Ibuprofeno', 20)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Ibuprofeno', 20)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Amoxicilina</div>
+      <div class="product-price">R$30 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Amoxicilina', 30)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Amoxicilina', 30)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Omeprazol</div>
+      <div class="product-price">R$25 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Omeprazol', 25)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Omeprazol', 25)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Ranitidina</div>
+      <div class="product-price">R$18 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Ranitidina', 18)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Ranitidina', 18)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Cetirizina</div>
+      <div class="product-price">R$12 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Cetirizina', 12)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Cetirizina', 12)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Losartana</div>
+      <div class="product-price">R$40 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Losartana', 40)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Losartana', 40)">&#9825;</span>
+    </div>
+    <div class="product">
+      <div class="product-name">Dipirona Sódica</div>
+      <div class="product-price">R$16 por caixa</div>
+      <button class="buy-button" onclick="addToCart('Dipirona Sódica', 16)">Comprar agora</button>
+      <span class="heart" onclick="toggleFavorite('Dipirona Sódica', 16)">&#9825;</span>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+    let favorites = [];
+
+    // Função para adicionar ao carrinho
+    function addToCart(productName, price) {
+      cart.push({ name: productName, price: price });
+      alert(`${productName} foi adicionado ao carrinho!`);
+      updateCart();
+    }
+
+    // Função para atualizar o carrinho
+    function updateCart() {
+      const cartContainer = document.querySelector('.cart-list');
+      const cartItems = cart.map(item => 
+        `<div class="cart-item">
+          <span>${item.name}</span>
+          <span>R$${item.price}</span>
+        </div>`
+      ).join('');
+      
+      const total = cart.reduce((sum, item) => sum + item.price, 0);
+      cartContainer.innerHTML = `
+        ${cartItems}
+        <div class="cart-total">Total: R$${total}</div>
+      `;
+    }
+
+    // Função para adicionar/remover favorito
+    function toggleFavorite(productName, price) {
+      const heart = event.target;
+      const isLiked = heart.classList.contains('liked');
+      if (isLiked) {
+        favorites = favorites.filter(item => item.name !== productName);
+        heart.classList.remove('liked');
+      } else {
+        favorites.push({ name: productName, price: price });
+        heart.classList.add('liked');
+      }
+      updateFavorites();
+    }
+
+    // Função para atualizar os favoritos
+    function updateFavorites() {
+      const favoritesContainer = document.querySelector('.favorites-list');
+      const favoriteItems = favorites.map(item => 
+        `<div class="favorites-item">
+          <span>${item.name}</span>
+          <span>R$${item.price}</span>
+        </div>`
+      ).join('');
+      favoritesContainer.innerHTML = favoriteItems;
+    }
+
+    // Função para mostrar/esconder favoritos
+    function toggleFavorites() {
+      const favoritesSection = document.querySelector('.favorites');
+      favoritesSection.style.display = favoritesSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Função para mostrar/esconder carrinho
+    function toggleCart() {
+      const cartSection = document.querySelector('.cart');
+      cartSection.style.display = cartSection.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>
